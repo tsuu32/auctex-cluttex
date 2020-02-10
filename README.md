@@ -4,13 +4,13 @@ This package provides [ClutTeX](https://www.ctan.org/pkg/cluttex) support for
 [AUCTeX](https://www.gnu.org/software/auctex/) package.
 
 ## Features
-##### `M-x TeX-command-master ClutTeX` (`C-c C-c ClutTeX`)
+#### `M-x TeX-command-master ClutTeX` (`C-c C-c ClutTeX`)
 Run `cluttex` with suitable arguments.
 
-##### Colorized output buffer
+#### Colorized output buffer
 ClutTeX output buffer seen by `M-x TeX-recenter-output-buffer` (`C-c C-l`) is colorized.
 
-##### `--synctex=1` option
+#### `--synctex=1` option
 Run `cluttex` with `--synctex=1` option if `TeX-source-correlate-mode` is enabled.
 
 ## Requirements
