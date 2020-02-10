@@ -28,7 +28,8 @@
 ;; To use this package, add following code to your init file.
 ;;
 ;;  (with-eval-after-load 'tex
-;;    (require 'auctex-cluttex))
+;;    (require 'auctex-cluttex)
+;;    (auctex-cluttex-setup))
 ;;
 ;; If you want to use ClutTeX as default command, add following code
 ;; to your init file.
