@@ -71,12 +71,12 @@
   (cond
    ((search-backward "TeX Output exited abnormally" nil t)
     (message "ClutTeX failed.  Type `%s' to display output."
-	     (substitute-command-keys
+             (substitute-command-keys
               "\\<TeX-mode-map>\\[TeX-recenter-output-buffer]")))
    (t
     (if (with-current-buffer TeX-command-buffer TeX-PDF-mode)
-	(setq TeX-output-extension "pdf"
-	      TeX-command-next TeX-command-Show))
+        (setq TeX-output-extension "pdf"
+              TeX-command-next TeX-command-Show))
     (message "ClutTeX finished successfully."))))
 
 (defun auctex-cluttex--TeX-command-default-advice (ret)
@@ -164,5 +164,9 @@ If RET is `TeX-command-BibTeX' or `TeX-command-Biber', return
     (advice-remove 'TeX-command-default #'auctex-cluttex--TeX-command-default-advice)))
 
 (provide 'auctex-cluttex)
+
+;; Local Variables:
+;; indent-tabs-mode: nil
+;; End:
 
 ;;; auctex-cluttex.el ends here
