@@ -50,10 +50,9 @@
   (let ((process (TeX-run-command name command file)))
     (setq TeX-sentinel-function #'TeX-ClutTeX-sentinel)
     (if TeX-process-asynchronous
-        (progn
-          (set-process-filter process #'TeX-ClutTeX-filter)
-          process)
-      (TeX-synchronous-sentinel name file process))))
+        (set-process-filter process #'TeX-ClutTeX-filter)
+      (TeX-synchronous-sentinel name file process))
+    process))
 
 (defun TeX-ClutTeX-filter (process string)
   "Filter to process PROCESS normal output STRING."
