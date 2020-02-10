@@ -63,21 +63,18 @@
       (insert-before-markers (ansi-color-apply string))
       (set-marker (process-mark process) (point)))))
 
-(defun TeX-ClutTeX-sentinel (_process _name)
-  "Cleanup TeX output buffer after running ClutTeX."
+(defun TeX-ClutTeX-sentinel (process _name)
+  "Cleanup TeX output buffer after running ClutTeX PROCESS."
   (unless TeX-process-asynchronous
     (ansi-color-apply-on-region (point-min) (point-max)))
-  (goto-char (point-max))
-  (cond
-   ((search-backward "TeX Output exited abnormally" nil t)
-    (message "ClutTeX failed.  Type `%s' to display output."
-             (substitute-command-keys
-              "\\<TeX-mode-map>\\[TeX-recenter-output-buffer]")))
-   (t
+  (if (not (= 0 (process-exit-status process)))
+      (message "ClutTeX failed.  Type `%s' to display output."
+               (substitute-command-keys
+                "\\<TeX-mode-map>\\[TeX-recenter-output-buffer]"))
     (if (with-current-buffer TeX-command-buffer TeX-PDF-mode)
         (setq TeX-output-extension "pdf"
               TeX-command-next TeX-command-Show))
-    (message "ClutTeX finished successfully."))))
+    (message "ClutTeX finished successfully.")))
 
 (defun auctex-cluttex--TeX-command-default-advice (ret)
   "Advice to function `TeX-command-default'.
