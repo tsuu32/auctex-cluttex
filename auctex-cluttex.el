@@ -45,56 +45,6 @@
 (require 'latex)
 (require 'tex-buf)
 
-(unless (executable-find "cluttex")
-  (error "Cannot find cluttex command"))
-
-
-(setq TeX-command-list
-      (append
-       TeX-command-list
-       '(("ClutTeX" "cluttex -e %(cluttexengine) %(cluttexbib) %(cluttexindex) %S %t"
-          TeX-run-ClutTeX nil
-          (plain-tex-mode latex-mode) :help "Run ClutTeX"))))
-
-(setq TeX-expand-list-builtin
-      (append
-       TeX-expand-list-builtin
-       '(("%(cluttexengine)"
-          (lambda ()
-            (format "%s%stex"
-                    (cond
-                     ((eq TeX-engine 'default) "pdf")
-                     ((eq TeX-engine 'xetex) "xe")
-                     ((eq TeX-engine 'luatex) "lua")
-                     ((eq TeX-engine 'ptex) "p")
-                     ((eq TeX-engine 'uptex) "up"))
-                    (cond
-                     ((eq major-mode 'plain-tex-mode) "")
-                     ((eq major-mode 'latex-mode) "la")))))
-         ("%(cluttexbib)"
-          (lambda ()
-            (cond
-             ((LaTeX-bibliography-list)
-              (if LaTeX-using-Biber
-                  "--biber"
-                (format "--bibtex=%s"
-                        (cond
-                         ((eq TeX-engine 'uptex) "upbibtex")
-                         ((eq TeX-engine 'ptex) "pbibtex")
-                         (t "bibtex")))))
-             (t ""))))
-         ("%(cluttexindex)"
-          (lambda ()
-            (cond
-             ((LaTeX-index-entry-list)
-              ;; TODO: makeglossaries support
-              (format "--makeindex=%s"
-                      (cond
-                       ((memq TeX-engine '(uptex xetex luatex)) "upmendex")
-                       ((eq TeX-engine 'ptex) "mendex")
-                       (t "makeindex"))))
-             (t "")))))))
-
 (defun TeX-run-ClutTeX (name command file)
   "Create a process for NAME using COMMAND to convert FILE with ClutTeX."
   (let ((process (TeX-run-command name command file)))
@@ -138,11 +88,80 @@ If RET is `TeX-command-BibTeX' or `TeX-command-Biber', return
       TeX-command-Show
     ret))
 
-(advice-add 'TeX-command-default :filter-return #'auctex-cluttex--TeX-command-default-advice)
-
 (defun auctex-cluttex-set-command-default ()
   "Set variable `TeX-command-default' to ClutTeX."
   (setq TeX-command-default "ClutTeX"))
+
+(defvar auctex-cluttex-setup-p nil)
+(defvar auctex-cluttex-TeX-command-list nil)
+(defvar auctex-cluttex-TeX-expand-list-builtin nil)
+
+;;;###autoload
+(defun auctex-cluttex-setup ()
+  "Setup `auctex-cluttex'."
+  (interactive)
+  (if auctex-cluttex-setup-p
+      (user-error "Package `auctex-cluttex' is already setup")
+    (unless (executable-find "cluttex")
+      (error "Cannot find cluttex command"))
+    (setq auctex-cluttex-setup-p t)
+    (setq auctex-cluttex-TeX-command-list TeX-command-list)
+    (setq auctex-cluttex-TeX-expand-list-builtin TeX-expand-list-builtin)
+    (setq TeX-command-list
+          (append
+           TeX-command-list
+           '(("ClutTeX" "cluttex -e %(cluttexengine) %(cluttexbib) %(cluttexindex) %S %t"
+              TeX-run-ClutTeX nil
+              (plain-tex-mode latex-mode) :help "Run ClutTeX"))))
+    (setq TeX-expand-list-builtin
+          (append
+           TeX-expand-list-builtin
+           '(("%(cluttexengine)"
+              (lambda ()
+                (format "%s%stex"
+                        (cond
+                         ((eq TeX-engine 'default) "pdf")
+                         ((eq TeX-engine 'xetex) "xe")
+                         ((eq TeX-engine 'luatex) "lua")
+                         ((eq TeX-engine 'ptex) "p")
+                         ((eq TeX-engine 'uptex) "up"))
+                        (cond
+                         ((eq major-mode 'plain-tex-mode) "")
+                         ((eq major-mode 'latex-mode) "la")))))
+             ("%(cluttexbib)"
+              (lambda ()
+                (cond
+                 ((LaTeX-bibliography-list)
+                  (if LaTeX-using-Biber
+                      "--biber"
+                    (format "--bibtex=%s"
+                            (cond
+                             ((eq TeX-engine 'uptex) "upbibtex")
+                             ((eq TeX-engine 'ptex) "pbibtex")
+                             (t "bibtex")))))
+                 (t ""))))
+             ("%(cluttexindex)"
+              (lambda ()
+                (cond
+                 ((LaTeX-index-entry-list)
+                  ;; TODO: makeglossaries support
+                  (format "--makeindex=%s"
+                          (cond
+                           ((memq TeX-engine '(uptex xetex luatex)) "upmendex")
+                           ((eq TeX-engine 'ptex) "mendex")
+                           (t "makeindex"))))
+                 (t "")))))))
+    (advice-add 'TeX-command-default :filter-return #'auctex-cluttex--TeX-command-default-advice)))
+
+(defun auctex-cluttex-teardown ()
+  "Teardown `auctex-cluttex'."
+  (interactive)
+  (if (not auctex-cluttex-setup-p)
+      (user-error "Package `auctex-cluttex' is not setup")
+    (setq auctex-cluttex-setup-p nil)
+    (setq TeX-command-list auctex-cluttex-TeX-command-list)
+    (setq TeX-expand-list-builtin auctex-cluttex-TeX-expand-list-builtin)
+    (advice-remove 'TeX-command-default #'auctex-cluttex--TeX-command-default-advice)))
 
 (provide 'auctex-cluttex)
 
