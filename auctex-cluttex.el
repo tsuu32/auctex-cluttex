@@ -68,9 +68,9 @@
   (unless TeX-process-asynchronous
     (ansi-color-apply-on-region (point-min) (point-max)))
   (if (not (= 0 (process-exit-status process)))
-      (message "ClutTeX failed.  Type `%s' to display output."
-               (substitute-command-keys
-                "\\<TeX-mode-map>\\[TeX-recenter-output-buffer]"))
+      (user-error "ClutTeX failed.  Type `%s' to display output"
+                  (substitute-command-keys
+                   "\\<TeX-mode-map>\\[TeX-recenter-output-buffer]"))
     (if (with-current-buffer TeX-command-buffer TeX-PDF-mode)
         (setq TeX-output-extension "pdf"
               TeX-command-next TeX-command-Show))
