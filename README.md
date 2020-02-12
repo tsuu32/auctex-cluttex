@@ -39,7 +39,7 @@ add following code to your init file.
 ```
 
 ## Sample Configuration
-```
+```elisp
 (require 'tex-site)
 (with-eval-after-load 'tex
   (setq TeX-auto-save t)
