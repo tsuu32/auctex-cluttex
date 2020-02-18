@@ -53,7 +53,7 @@
       (append
        TeX-command-list
        '(("ClutTeX" "cluttex -e %(cluttexengine) %(cluttexbib) %(cluttexindex) %S %t"
-          TeX-run-ClutTeX nil
+          auctex-cluttex--TeX-run-ClutTeX nil
           (plain-tex-mode latex-mode) :help "Run ClutTeX"))))
 
 (setq TeX-expand-list-builtin
@@ -95,17 +95,17 @@
                        (t "makeindex"))))
              (t "")))))))
 
-(defun TeX-run-ClutTeX (name command file)
+(defun auctex-cluttex--TeX-run-ClutTeX (name command file)
   "Create a process for NAME using COMMAND to convert FILE with ClutTeX."
   (let ((process (TeX-run-command name command file)))
-    (setq TeX-sentinel-function #'TeX-ClutTeX-sentinel)
+    (setq TeX-sentinel-function #'auctex-cluttex--TeX-ClutTeX-sentinel)
     (if TeX-process-asynchronous
         (progn
-          (set-process-filter process #'TeX-ClutTeX-filter)
+          (set-process-filter process #'auctex-cluttex--TeX-ClutTeX-filter)
           process)
       (TeX-synchronous-sentinel name file process))))
 
-(defun TeX-ClutTeX-filter (process string)
+(defun auctex-cluttex--TeX-ClutTeX-filter (process string)
   "Filter to process PROCESS normal output STRING."
   (with-current-buffer (process-buffer process)
     (save-excursion
@@ -113,7 +113,7 @@
       (insert-before-markers (ansi-color-apply string))
       (set-marker (process-mark process) (point)))))
 
-(defun TeX-ClutTeX-sentinel (_process _name)
+(defun auctex-cluttex--TeX-ClutTeX-sentinel (_process _name)
   "Cleanup TeX output buffer after running ClutTeX."
   (unless TeX-process-asynchronous
     (ansi-color-apply-on-region (point-min) (point-max)))
