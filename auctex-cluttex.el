@@ -1,4 +1,4 @@
-;;; auctex-cluttex.el --- ClutTeX support for AUCTeX
+;;; auctex-cluttex.el --- ClutTeX support for AUCTeX -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2020 by Masahiro Nakamura
 
