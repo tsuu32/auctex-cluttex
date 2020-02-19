@@ -45,9 +45,6 @@
 (require 'latex)
 (require 'tex-buf)
 
-(unless (executable-find "cluttex")
-  (error "Cannot find cluttex command"))
-
 
 (defvar auctex-cluttex-ClutTeX-command
   '("ClutTeX" "cluttex -e %(cluttexengine) %(cluttexbib) %(cluttexindex) %S %t"
@@ -149,6 +146,8 @@ is added to `TeX-command-list'."
   :global t
   (if auctex-cluttex-mode
       (unless (memq auctex-cluttex-ClutTeX-command TeX-command-list)
+        (unless (executable-find "cluttex")
+          (error "Cannot find cluttex command"))
         (setq TeX-command-list
               (append (butlast TeX-command-list 1)
                       (list auctex-cluttex-ClutTeX-command)
