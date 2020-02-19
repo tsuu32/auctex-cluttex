@@ -167,20 +167,24 @@ is added to `TeX-command-list'."
                               (eq item auctex-cluttex-cluttexindex-expand)))
                         TeX-expand-list-builtin))))
 
-(defun auctex-cluttex--TeX-command-default-advice (ret)
+(defun auctex-cluttex--TeX-command-default-advice (retval)
   "Advice to function `TeX-command-default'.
-If RET is `TeX-command-BibTeX' or `TeX-command-Biber', return
-`TeX-command-Show' only when variable `TeX-command-default' is ClutTeX."
+If RETVAL is `TeX-command-BibTeX' or `TeX-command-Biber', return
+`TeX-command-Show' only when variable `TeX-command-default' is
+ClutTeX.  That's because ClutTeX does not output bbl file in
+`TeX-master-directory'."
   (if (and (equal TeX-command-default "ClutTeX")
-           (member ret `(,TeX-command-BibTeX ,TeX-command-Biber)))
+           (member retval `(,TeX-command-BibTeX ,TeX-command-Biber)))
       TeX-command-Show
-    ret))
+    retval))
 
-(advice-add 'TeX-command-default :filter-return #'auctex-cluttex--TeX-command-default-advice)
-
+;;;###autoload
 (defun auctex-cluttex-set-command-default ()
   "Set variable `TeX-command-default' to ClutTeX."
-  (setq TeX-command-default "ClutTeX"))
+  (when auctex-cluttex-mode
+    (setq TeX-command-default "ClutTeX")
+    (advice-add 'TeX-command-default :filter-return
+                #'auctex-cluttex--TeX-command-default-advice)))
 
 (provide 'auctex-cluttex)
 
