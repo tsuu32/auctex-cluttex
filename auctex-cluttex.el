@@ -28,7 +28,7 @@
 ;; To use this package, add following code to your init file.
 ;;
 ;;  (with-eval-after-load 'tex
-;;    (require 'auctex-cluttex))
+;;    (auctex-cluttex-mode))
 ;;
 ;; If you want to use ClutTeX as default command, add following code
 ;; to your init file.
@@ -49,51 +49,58 @@
   (error "Cannot find cluttex command"))
 
 
-(setq TeX-command-list
-      (append
-       TeX-command-list
-       '(("ClutTeX" "cluttex -e %(cluttexengine) %(cluttexbib) %(cluttexindex) %S %t"
-          auctex-cluttex--TeX-run-ClutTeX nil
-          (plain-tex-mode latex-mode) :help "Run ClutTeX"))))
+(defvar auctex-cluttex-ClutTeX-command
+  '("ClutTeX" "cluttex -e %(cluttexengine) %(cluttexbib) %(cluttexindex) %S %t"
+    auctex-cluttex--TeX-run-ClutTeX nil
+    (plain-tex-mode latex-mode) :help "Run ClutTeX")
+  "ClutTeX command element.  See `TeX-command-list'.")
 
-(setq TeX-expand-list-builtin
-      (append
-       TeX-expand-list-builtin
-       '(("%(cluttexengine)"
-          (lambda ()
-            (format "%s%stex"
-                    (cond
-                     ((eq TeX-engine 'default) "pdf")
-                     ((eq TeX-engine 'xetex) "xe")
-                     ((eq TeX-engine 'luatex) "lua")
-                     ((eq TeX-engine 'ptex) "p")
-                     ((eq TeX-engine 'uptex) "up"))
-                    (cond
-                     ((eq major-mode 'plain-tex-mode) "")
-                     ((eq major-mode 'latex-mode) "la")))))
-         ("%(cluttexbib)"
-          (lambda ()
-            (cond
-             ((LaTeX-bibliography-list)
-              (if LaTeX-using-Biber
-                  "--biber"
-                (format "--bibtex=%s"
-                        (cond
-                         ((eq TeX-engine 'uptex) "upbibtex")
-                         ((eq TeX-engine 'ptex) "pbibtex")
-                         (t "bibtex")))))
-             (t ""))))
-         ("%(cluttexindex)"
-          (lambda ()
-            (cond
-             ((LaTeX-index-entry-list)
-              ;; TODO: makeglossaries support
-              (format "--makeindex=%s"
-                      (cond
-                       ((memq TeX-engine '(uptex xetex luatex)) "upmendex")
-                       ((eq TeX-engine 'ptex) "mendex")
-                       (t "makeindex"))))
-             (t "")))))))
+(defvar auctex-cluttex-cluttexengine-expand
+  '("%(cluttexengine)"
+    (lambda ()
+      (format "%s%stex"
+              (cond
+               ((eq TeX-engine 'default) "pdf")
+               ((eq TeX-engine 'xetex) "xe")
+               ((eq TeX-engine 'luatex) "lua")
+               ((eq TeX-engine 'ptex) "p")
+               ((eq TeX-engine 'uptex) "up"))
+              (cond
+               ((eq major-mode 'plain-tex-mode) "")
+               ((eq major-mode 'latex-mode) "la")))))
+  "TeX engine detector for `auctex-cluttex-ClutTeX-command'.
+See `TeX-expand-list-builtin'.")
+
+(defvar auctex-cluttex-cluttexbib-expand
+  '("%(cluttexbib)"
+    (lambda ()
+      (cond
+       ((LaTeX-bibliography-list)
+        (if LaTeX-using-Biber
+            "--biber"
+          (format "--bibtex=%s"
+                  (cond
+                   ((eq TeX-engine 'uptex) "upbibtex")
+                   ((eq TeX-engine 'ptex) "pbibtex")
+                   (t "bibtex")))))
+       (t ""))))
+  "BibTeX command detector for `auctex-cluttex-ClutTeX-command'.
+See `TeX-expand-list-builtin'.")
+
+(defvar auctex-cluttex-cluttexindex-expand
+  '("%(cluttexindex)"
+    (lambda ()
+      (cond
+       ((LaTeX-index-entry-list)
+        ;; TODO: makeglossaries support
+        (format "--makeindex=%s"
+                (cond
+                 ((memq TeX-engine '(uptex xetex luatex)) "upmendex")
+                 ((eq TeX-engine 'ptex) "mendex")
+                 (t "makeindex"))))
+       (t ""))))
+  "MakeIndex command detector for `auctex-cluttex-ClutTeX-command'.
+See `TeX-expand-list-builtin'.")
 
 (defun auctex-cluttex--TeX-run-ClutTeX (name command file)
   "Create a process for NAME using COMMAND to convert FILE with ClutTeX."
@@ -128,6 +135,37 @@
 	(setq TeX-output-extension "pdf"
 	      TeX-command-next TeX-command-Show))
     (message "ClutTeX finished successfully."))))
+
+
+;;;###autoload
+(define-minor-mode auctex-cluttex-mode
+  "Toggle ClutTeX support for AUCTeX (AUCTeX ClutTeX mode).
+With a prefix argument ARG, enable AUCTeX ClutTeX mode if ARG is
+positive, and disable it otherwise.  If called from Lisp, enable
+the mode if ARG is omitted or nil.
+
+When AUCTeX ClutTeX mode is enabled, `auctex-cluttex-ClutTeX-command'
+is added to `TeX-command-list'."
+  :global t
+  (if auctex-cluttex-mode
+      (unless (memq auctex-cluttex-ClutTeX-command TeX-command-list)
+        (setq TeX-command-list
+              (append (butlast TeX-command-list 1)
+                      (list auctex-cluttex-ClutTeX-command)
+                      (last TeX-command-list)))
+        (push auctex-cluttex-cluttexengine-expand TeX-expand-list-builtin)
+        (push auctex-cluttex-cluttexbib-expand TeX-expand-list-builtin)
+        (push auctex-cluttex-cluttexindex-expand TeX-expand-list-builtin))
+    (setq TeX-command-list
+          (cl-remove-if (lambda (item)
+                          (eq item auctex-cluttex-ClutTeX-command))
+                        TeX-command-list))
+    (setq TeX-expand-list-builtin
+          (cl-remove-if (lambda (item)
+                          (or (eq item auctex-cluttex-cluttexengine-expand)
+                              (eq item auctex-cluttex-cluttexbib-expand)
+                              (eq item auctex-cluttex-cluttexindex-expand)))
+                        TeX-expand-list-builtin))))
 
 (defun auctex-cluttex--TeX-command-default-advice (ret)
   "Advice to function `TeX-command-default'.

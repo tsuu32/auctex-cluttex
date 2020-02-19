@@ -25,7 +25,7 @@ To use this package, add following code to your init file.
 
 ```elisp
 (with-eval-after-load 'tex
-  (require 'auctex-cluttex))
+  (auctex-cluttex-mode))
 ```
 
 If you want to use ClutTeX as default command of `M-x TeX-command-master` (`C-c C-c`), 
@@ -45,7 +45,7 @@ add following code to your init file.
   (setq TeX-auto-save t)
   (setq TeX-parse-self t)
   (TeX-source-correlate-mode)
-  (require 'auctex-cluttex))
+  (auctex-cluttex-mode))
 (add-hook 'plain-TeX-mode-hook
           #'auctex-cluttex-set-command-default)
 (add-hook 'LaTeX-mode-hook
