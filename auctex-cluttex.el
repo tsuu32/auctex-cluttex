@@ -147,6 +147,7 @@ is added to `TeX-command-list'."
   (if auctex-cluttex-mode
       (unless (memq auctex-cluttex-ClutTeX-command TeX-command-list)
         (unless (executable-find "cluttex")
+          (setq auctex-cluttex-mode nil)
           (error "Cannot find cluttex command"))
         (setq TeX-command-list
               (append (butlast TeX-command-list 1)
