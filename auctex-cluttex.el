@@ -46,6 +46,17 @@
 (require 'tex-buf)
 
 
+(defgroup auctex-cluttex nil
+  "ClutTeX support for AUCTeX."
+  :group 'TeX-command
+  :prefix "auctex-cluttex-")
+
+(defcustom auctex-cluttex-program "cluttex"
+  "Name of cluttex command (usually `cluttex')."
+  :group 'auctex-cluttex
+  :type 'file)
+
+
 (defvar auctex-cluttex-ClutTeX-command
   '("ClutTeX" "cluttex -e %(cluttexengine) %(cluttexbib) %(cluttexindex) %S %t"
     auctex-cluttex--TeX-run-ClutTeX nil
@@ -146,9 +157,10 @@ is added to `TeX-command-list'."
   :global t
   (if auctex-cluttex-mode
       (unless (memq auctex-cluttex-ClutTeX-command TeX-command-list)
-        (unless (executable-find "cluttex")
+        (unless (executable-find auctex-cluttex-program)
           (setq auctex-cluttex-mode nil)
-          (error "Cannot find cluttex command"))
+          (signal 'file-error (list "Searching for program"
+                                    auctex-cluttex-program "no such file")))
         (setq TeX-command-list
               (append (butlast TeX-command-list 1)
                       (list auctex-cluttex-ClutTeX-command)
