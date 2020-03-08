@@ -6,14 +6,10 @@ This package provides [ClutTeX](https://www.ctan.org/pkg/cluttex) support for
 [AUCTeX](https://www.gnu.org/software/auctex/) package.
 
 ## Features
-#### `M-x TeX-command-master ClutTeX` (`C-c C-c ClutTeX`)
-Run `cluttex` with suitable arguments.
-
-#### Colorized output buffer
-ClutTeX output buffer seen by `M-x TeX-recenter-output-buffer` (`C-c C-l`) is colorized.
-
-#### `--synctex=1` option
-Run `cluttex` with `--synctex=1` option if `TeX-source-correlate-mode` is enabled.
+- Run `cluttex` command with `C-c C-c ClutTeX` (`M-x TeX-command-master ClutTeX`)
+  - with suitable command-line options (e.g. `-e pdflatex`, `-e uplatex --bibtex=upbibtex`, ...)
+  - with `--synctex=1` option if `TeX-source-correlate-mode` is enabled.
+- Colorized `cluttex` compile log (which can see with `C-c C-l` (`M-x TeX-recenter-output-buffer`))
 
 ## Requirements
 Make sure that you install these requirements.
@@ -30,7 +26,7 @@ To use this package, add following code to your init file.
   (auctex-cluttex-mode))
 ```
 
-If you want to use ClutTeX as default command of `M-x TeX-command-master` (`C-c C-c`), 
+If you want to use ClutTeX as default command of `C-c C-c` (`M-x TeX-command-master`), 
 add following code to your init file.
 
 ```elisp
