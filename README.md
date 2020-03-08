@@ -1,5 +1,7 @@
 # auctex-cluttex.el
 
+[![MELPA](https://melpa.org/packages/auctex-cluttex-badge.svg)](https://melpa.org/#/auctex-cluttex)
+
 This package provides [ClutTeX](https://www.ctan.org/pkg/cluttex) support for
 [AUCTeX](https://www.gnu.org/software/auctex/) package.
 
