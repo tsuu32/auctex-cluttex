@@ -136,12 +136,12 @@ See `TeX-expand-list-builtin'.")
   (cond
    ((search-backward "TeX Output exited abnormally" nil t)
     (message "ClutTeX failed.  Type `%s' to display output."
-	     (substitute-command-keys
+             (substitute-command-keys
               "\\<TeX-mode-map>\\[TeX-recenter-output-buffer]")))
    (t
     (if (with-current-buffer TeX-command-buffer TeX-PDF-mode)
-	(setq TeX-output-extension "pdf"
-	      TeX-command-next TeX-command-Show))
+        (setq TeX-output-extension "pdf"
+              TeX-command-next TeX-command-Show))
     (message "ClutTeX finished successfully."))))
 
 
