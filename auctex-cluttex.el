@@ -169,9 +169,8 @@ is added to `TeX-command-list'."
         (push auctex-cluttex-cluttexbib-expand TeX-expand-list-builtin)
         (push auctex-cluttex-cluttexindex-expand TeX-expand-list-builtin))
     (setq TeX-command-list
-          (cl-remove-if (lambda (item)
-                          (eq item auctex-cluttex-ClutTeX-command))
-                        TeX-command-list))
+          (remove auctex-cluttex-ClutTeX-command
+                  TeX-command-list))
     (setq TeX-expand-list-builtin
           (cl-remove-if (lambda (item)
                           (or (eq item auctex-cluttex-cluttexengine-expand)
