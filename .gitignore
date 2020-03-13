@@ -1,5 +1,6 @@
 *.elc
 *~
+*.pdf
 
 /.eldev
 /Eldev-local
