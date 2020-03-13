@@ -1,0 +1,38 @@
+language: generic
+os: linux
+
+cache:
+  directories:
+    - $HOME/texlive
+    - $HOME/.texlive
+    - $HOME/texmf
+
+env:
+  - EVM_EMACS=emacs-25.1-travis
+  - EVM_EMACS=emacs-25.2-travis
+  - EVM_EMACS=emacs-25.3-travis
+  - EVM_EMACS=emacs-26.1-travis-linux-xenial
+  - EVM_EMACS=emacs-26.2-travis-linux-xenial
+  - EVM_EMACS=emacs-26.3-travis-linux-xenial
+  - EVM_EMACS=emacs-git-snapshot-travis-linux-xenial
+
+jobs:
+  allow_failures:
+    - env: EVM_EMACS=emacs-git-snapshot-travis-linux-xenial
+
+before_install:
+  - wget https://raw.githubusercontent.com/y-yu/install-tex-travis/master/install-tex.sh
+  - wget https://raw.githubusercontent.com/y-yu/install-tex-travis/master/tlmgr.sh
+  - chmod +x install-tex.sh tlmgr.sh
+
+install:
+  - . ./install-tex.sh
+  - ./tlmgr.sh install cluttex
+  - curl -fsSL https://raw.github.com/doublep/eldev/master/webinstall/travis-eldev-and-evm > x.sh && source ./x.sh
+  - evm install $EVM_EMACS --use
+
+script:
+  - eldev -dtT lint
+  - eldev -p -dtT test --expect 6
+  - eldev -dtT compile --warnings-as-errors
+
