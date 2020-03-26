@@ -18,6 +18,19 @@ Make sure that you install these requirements.
 * AUCTeX 12.2 or higher
 * ClutTeX 0.4 or higher
 
+## Installation
+### From MELPA
+
+`M-x package-install auctex-cluttex` to install auctex-cluttex from [MELPA](https://melpa.org).
+
+### Manually
+Add the following to your init file:
+
+```elisp
+(add-to-list 'load-path "/path/to/auctex-cluttex/") ; add auctex-cluttex.el's directory to the load-path
+(require 'auctex-cluttex)                           ; load auctex-cluttex
+```
+
 ## Setup
 To use this package, add following code to your init file.
 
