@@ -67,15 +67,15 @@
   '("%(cluttexengine)"
     (lambda ()
       (format "%s%stex"
-              (cond
-               ((eq TeX-engine 'default) "pdf")
-               ((eq TeX-engine 'xetex) "xe")
-               ((eq TeX-engine 'luatex) "lua")
-               ((eq TeX-engine 'ptex) "p")
-               ((eq TeX-engine 'uptex) "up"))
-              (cond
-               ((eq major-mode 'plain-tex-mode) "")
-               ((eq major-mode 'latex-mode) "la")))))
+              (pcase TeX-engine
+                ('default "pdf")
+                ('xetex "xe")
+                ('luatex "lua")
+                ('ptex "p")
+                ('uptex "up"))
+              (pcase major-mode
+                ('plain-tex-mode "")
+                ('latex-mode "la")))))
   "TeX engine detector for `auctex-cluttex-ClutTeX-command'.
 See `TeX-expand-list-builtin'.")
 
