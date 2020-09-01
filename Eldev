@@ -4,7 +4,8 @@
 (eldev-use-package-archive 'melpa-stable)
 
 (setq eldev-test-framework 'buttercup)
-
 (eldev-add-extra-dependencies 'test 'with-simulated-input)
 
 (setq elisp-lint-ignored-validators '("fill-column" "indent-character"))
+
+(eldev-use-plugin 'autoloads)
