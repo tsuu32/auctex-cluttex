@@ -10,7 +10,7 @@ This package provides [ClutTeX](https://www.ctan.org/pkg/cluttex) support for
 - Run `cluttex` command with `C-c C-c ClutTeX` (`M-x TeX-command-master ClutTeX`)
   - with suitable command-line options (e.g. `-e pdflatex`, `-e uplatex --bibtex=upbibtex`, ...)
   - with `--synctex=1` option if `TeX-source-correlate-mode` is enabled.
-- Colorized `cluttex` compile log (which can see with `C-c C-l` (`M-x TeX-recenter-output-buffer`))
+- Colorized `cluttex` compile log (which can be seen with `C-c C-l` (`M-x TeX-recenter-output-buffer`))
 
 ## Requirements
 Make sure that you install these requirements.
