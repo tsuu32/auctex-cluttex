@@ -45,6 +45,8 @@
 (require 'latex)
 (require 'tex-buf)
 
+(require 'cl-lib)
+
 
 (defgroup auctex-cluttex nil
   "ClutTeX support for AUCTeX."
@@ -53,7 +55,6 @@
 
 (defcustom auctex-cluttex-program "cluttex"
   "Name of cluttex command (usually `cluttex')."
-  :group 'auctex-cluttex
   :type 'file)
 
 
@@ -69,13 +70,13 @@
       (format "%s%stex"
               (pcase TeX-engine
                 ('default "pdf")
-                ('xetex "xe")
-                ('luatex "lua")
-                ('ptex "p")
-                ('uptex "up"))
+                ('xetex   "xe")
+                ('luatex  "lua")
+                ('ptex    "p")
+                ('uptex   "up"))
               (pcase major-mode
                 ('plain-tex-mode "")
-                ('latex-mode "la")))))
+                ('latex-mode     "la")))))
   "TeX engine detector for `auctex-cluttex-ClutTeX-command'.
 See `TeX-expand-list-builtin'.")
 
@@ -87,10 +88,10 @@ See `TeX-expand-list-builtin'.")
         (if LaTeX-using-Biber
             "--biber"
           (format "--bibtex=%s"
-                  (cond
-                   ((eq TeX-engine 'uptex) "upbibtex")
-                   ((eq TeX-engine 'ptex) "pbibtex")
-                   (t "bibtex")))))
+                  (pcase TeX-engine
+                    ('uptex "upbibtex")
+                    ('ptex  "pbibtex")
+                    (_      "bibtex")))))
        (t ""))))
   "BibTeX command detector for `auctex-cluttex-ClutTeX-command'.
 See `TeX-expand-list-builtin'.")
@@ -102,10 +103,10 @@ See `TeX-expand-list-builtin'.")
        ((LaTeX-index-entry-list)
         ;; TODO: makeglossaries support
         (format "--makeindex=%s"
-                (cond
-                 ((memq TeX-engine '(uptex xetex luatex)) "upmendex")
-                 ((eq TeX-engine 'ptex) "mendex")
-                 (t "makeindex"))))
+                (pcase TeX-engine
+                 ((or 'uptex 'xetex 'luatex) "upmendex")
+                 ('ptex                      "mendex")
+                 (_                          "makeindex"))))
        (t ""))))
   "MakeIndex command detector for `auctex-cluttex-ClutTeX-command'.
 See `TeX-expand-list-builtin'.")
