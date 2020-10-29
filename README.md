@@ -33,7 +33,7 @@ Add the following to your init file:
 ```
 
 ## Setup
-To use this package, add following code to your init file.
+To use this package, add following code to your init file:
 
 ```elisp
 (with-eval-after-load 'tex
@@ -41,7 +41,7 @@ To use this package, add following code to your init file.
 ```
 
 If you want to use ClutTeX as default command of `C-c C-c` (`M-x TeX-command-master`), 
-add following code to your init file.
+add following code to your init file:
 
 ```elisp
 (add-hook 'plain-TeX-mode-hook
