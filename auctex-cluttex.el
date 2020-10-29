@@ -104,9 +104,9 @@ See `TeX-expand-list-builtin'.")
         ;; TODO: makeglossaries support
         (format "--makeindex=%s"
                 (pcase TeX-engine
-                 ((or 'uptex 'xetex 'luatex) "upmendex")
-                 ('ptex                      "mendex")
-                 (_                          "makeindex"))))
+                  ((or 'uptex 'xetex 'luatex) "upmendex")
+                  ('ptex                      "mendex")
+                  (_                          "makeindex"))))
        (t ""))))
   "MakeIndex command detector for `auctex-cluttex-ClutTeX-command'.
 See `TeX-expand-list-builtin'.")
