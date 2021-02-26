@@ -53,7 +53,7 @@
   :group 'TeX-command
   :prefix "auctex-cluttex-")
 
-(defcustom auctex-cluttex-program "cluttex"
+(defcustom auctex-cluttex-program (executable-find "cluttex")
   "Name of cluttex command (usually `cluttex')."
   :type 'file)
 
@@ -111,6 +111,8 @@ See `TeX-expand-list-builtin'.")
   "MakeIndex command detector for `auctex-cluttex-ClutTeX-command'.
 See `TeX-expand-list-builtin'.")
 
+(defvar-local auctex-cluttex--old-TeX-command-default nil)
+
 (defun auctex-cluttex--TeX-run-ClutTeX (name command file)
   "Create a process for NAME using COMMAND to convert FILE with ClutTeX."
   (let ((process (TeX-run-command name command file)))
@@ -145,7 +147,6 @@ See `TeX-expand-list-builtin'.")
               TeX-command-next TeX-command-Show))
     (message "ClutTeX finished successfully."))))
 
-
 ;;;###autoload
 (define-minor-mode auctex-cluttex-mode
   "Toggle ClutTeX support for AUCTeX (AUCTeX ClutTeX mode).
@@ -155,48 +156,51 @@ the mode if ARG is omitted or nil.
 
 When AUCTeX ClutTeX mode is enabled, `auctex-cluttex-ClutTeX-command'
 is added to `TeX-command-list'."
-  :global t
-  (if auctex-cluttex-mode
-      (unless (memq auctex-cluttex-ClutTeX-command TeX-command-list)
-        (unless (executable-find auctex-cluttex-program)
-          (setq auctex-cluttex-mode nil)
-          (signal 'file-error (list "Searching for program"
-                                    auctex-cluttex-program "no such file")))
-        (setq TeX-command-list
-              (append (butlast TeX-command-list 1)
-                      (list auctex-cluttex-ClutTeX-command)
-                      (last TeX-command-list)))
-        (push auctex-cluttex-cluttexengine-expand TeX-expand-list-builtin)
-        (push auctex-cluttex-cluttexbib-expand TeX-expand-list-builtin)
-        (push auctex-cluttex-cluttexindex-expand TeX-expand-list-builtin))
-    (setq TeX-command-list
-          (remove auctex-cluttex-ClutTeX-command
-                  TeX-command-list))
-    (setq TeX-expand-list-builtin
-          (cl-remove-if (lambda (item)
-                          (or (eq item auctex-cluttex-cluttexengine-expand)
-                              (eq item auctex-cluttex-cluttexbib-expand)
-                              (eq item auctex-cluttex-cluttexindex-expand)))
-                        TeX-expand-list-builtin))))
+  nil nil nil
+  (cond
+   (auctex-cluttex-mode
+    (auctex-cluttex-mode 0)
+    (setq auctex-cluttex-mode t)
+    (setq auctex-cluttex--old-TeX-command-default TeX-command-default)
+    (setq TeX-command-default "ClutTeX")
+    (setq-local TeX-command-list
+                (append (butlast TeX-command-list 1)
+                        (list auctex-cluttex-ClutTeX-command)
+                        (last TeX-command-list)))
+    (setq-local TeX-expand-list-builtin
+                (append (list auctex-cluttex-cluttexengine-expand
+                              auctex-cluttex-cluttexbib-expand
+                              auctex-cluttex-cluttexindex-expand)
+                        TeX-expand-list-builtin)))
+   (t
+    (when (equal TeX-command-default "ClutTeX")
+      (setq TeX-command-default
+            auctex-cluttex--old-TeX-command-default))
+    (setq-local TeX-command-list
+                (remove auctex-cluttex-ClutTeX-command
+                        TeX-command-list))
+    (setq-local TeX-expand-list-builtin
+                (cl-remove-if (lambda (item)
+                                (or (eq item auctex-cluttex-cluttexengine-expand)
+                                    (eq item auctex-cluttex-cluttexbib-expand)
+                                    (eq item auctex-cluttex-cluttexindex-expand)))
+                              TeX-expand-list-builtin)))))
 
-(defun auctex-cluttex--TeX-command-default-advice (retval)
+
+(defun auctex-cluttex--TeX-command-default (retval)
   "Advice to function `TeX-command-default'.
 If RETVAL is `TeX-command-BibTeX' or `TeX-command-Biber', return
-`TeX-command-Show' only when variable `TeX-command-default' is
-ClutTeX.  That's because ClutTeX does not output bbl file in
+`TeX-command-Show' only when `auctex-cluttex-mode' is enabled.
+
+This is because ClutTeX does not output bbl file in
 `TeX-master-directory'."
-  (if (and (equal TeX-command-default "ClutTeX")
-           (member retval `(,TeX-command-BibTeX ,TeX-command-Biber)))
+  (if (and auctex-cluttex-mode
+           (memq retval (list TeX-command-BibTeX TeX-command-Biber)))
       TeX-command-Show
     retval))
 
-;;;###autoload
-(defun auctex-cluttex-set-command-default ()
-  "Set variable `TeX-command-default' to ClutTeX."
-  (when auctex-cluttex-mode
-    (setq TeX-command-default "ClutTeX")
-    (advice-add 'TeX-command-default :filter-return
-                #'auctex-cluttex--TeX-command-default-advice)))
+(advice-add 'TeX-command-default :filter-return
+            #'auctex-cluttex--TeX-command-default)
 
 (provide 'auctex-cluttex)
 
