@@ -1,0 +1,50 @@
+name: CI
+on:
+  push:
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    continue-on-error: ${{matrix.emacs_version == 'snapshot'}}
+    strategy:
+      matrix:
+        emacs_version:
+          - 25.1
+          - 25.2
+          - 25.3
+          - 26.1
+          - 26.2
+          - 26.3
+          - 27.1
+          - snapshot
+
+    steps:
+    - name: Set up Emacs
+      uses: purcell/setup-emacs@master
+      with:
+        version: ${{matrix.emacs_version}}
+
+    - name: Install Eldev
+      run: curl -fsSL https://raw.github.com/doublep/eldev/master/webinstall/github-eldev | sh
+
+    - name: Install TeX Live
+      run: |
+        sudo apt-get install -y texlive-latex-recommended texlive-latex-extra
+        sudo apt-get install -y texlive-extra-utils # cluttex
+
+    - name: Check out the source code
+      uses: actions/checkout@v2
+
+    - name: Lint
+      run: eldev -dtT lint
+
+    - name: Test
+      run: eldev -p -dtT test --expect 6
+
+    - name: Byte-comple
+      run: eldev -dtT compile --warnings-as-errors
