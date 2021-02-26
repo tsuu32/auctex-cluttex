@@ -36,6 +36,6 @@ install:
 
 script:
   - eldev -dtT lint
-  - eldev -p -dtT test --expect 8
+  - eldev -p -dtT test --expect 6
   - eldev -dtT compile --warnings-as-errors
 
