@@ -6,11 +6,14 @@
 This package provides [ClutTeX](https://www.ctan.org/pkg/cluttex) support for
 [AUCTeX](https://www.gnu.org/software/auctex/) package.
 
+## Incompatible change
+* 2021/02/26: `auctex-cluttex-mode` is now buffer-local (not global) minor mode. Check setup below and modify your settings.
+
 ## Features
 - Run `cluttex` command with `C-c C-c ClutTeX` (`M-x TeX-command-master ClutTeX`)
   - with suitable command-line options (e.g. `-e pdflatex`, `-e uplatex --bibtex=upbibtex`, ...)
   - with `--synctex=1` option if `TeX-source-correlate-mode` is enabled.
-- Colorized `cluttex` compile log (which can be seen with `C-c C-l` (`M-x TeX-recenter-output-buffer`))
+- Colorize `cluttex` log buffer (which can be seen with `C-c C-l` (`M-x TeX-recenter-output-buffer`))
 
 ## Requirements
 Make sure that you install these requirements.
@@ -21,7 +24,6 @@ Make sure that you install these requirements.
 
 ## Installation
 ### From MELPA
-
 `M-x package-install auctex-cluttex` to install auctex-cluttex from [MELPA](https://melpa.org).
 
 ### Manually
@@ -36,19 +38,13 @@ Add the following to your init file:
 To use this package, add following code to your init file:
 
 ```elisp
-(with-eval-after-load 'tex
-  (auctex-cluttex-mode))
-```
-
-If you want to use ClutTeX as default command of `C-c C-c` (`M-x TeX-command-master`), 
-add following code to your init file:
-
-```elisp
 (add-hook 'plain-TeX-mode-hook
-          #'auctex-cluttex-set-command-default)
+          #'auctex-cluttex-mode)
 (add-hook 'LaTeX-mode-hook
-          #'auctex-cluttex-set-command-default)
+          #'auctex-cluttex-mode)
 ```
+
+You can use ClutTeX as default command of `C-c C-c` (`M-x TeX-command-master`).
 
 ## Sample Configuration
 ```elisp
@@ -56,12 +52,11 @@ add following code to your init file:
 (with-eval-after-load 'tex
   (setq TeX-auto-save t)
   (setq TeX-parse-self t)
-  (TeX-source-correlate-mode)
-  (auctex-cluttex-mode))
+  (TeX-source-correlate-mode))
 (add-hook 'plain-TeX-mode-hook
-          #'auctex-cluttex-set-command-default)
+          #'auctex-cluttex-mode)
 (add-hook 'LaTeX-mode-hook
-          #'auctex-cluttex-set-command-default)
+          #'auctex-cluttex-mode)
 ```
 
 
