@@ -1,9 +1,9 @@
 ;;; auctex-cluttex.el --- ClutTeX support for AUCTeX -*- lexical-binding: t -*-
 
-;; Copyright (C) 2020 by Masahiro Nakamura
+;; Copyright (C) 2020-2021 by Masahiro Nakamura
 
 ;; Author: Masahiro Nakamura <tsuucat@icloud.com>
-;; Version: 0.1.0
+;; Version: 0.2.0
 ;; URL: https://github.com/tsuu32/auctex-cluttex
 ;; Package-Requires: ((emacs "24.4") (auctex "12.2"))
 ;; Keywords: tex
