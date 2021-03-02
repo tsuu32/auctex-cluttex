@@ -1,7 +1,7 @@
 # auctex-cluttex.el
 
 [![MELPA](https://melpa.org/packages/auctex-cluttex-badge.svg)](https://melpa.org/#/auctex-cluttex)
-[![Build Status](https://travis-ci.org/tsuu32/auctex-cluttex.svg?branch=master)](https://travis-ci.org/tsuu32/auctex-cluttex)
+[![CI](https://github.com/tsuu32/auctex-cluttex/actions/workflows/ci.yml/badge.svg)](https://github.com/tsuu32/auctex-cluttex/actions/workflows/ci.yml)
 
 This package provides [ClutTeX](https://www.ctan.org/pkg/cluttex) support for
 [AUCTeX](https://www.gnu.org/software/auctex/) package.
