@@ -150,6 +150,7 @@ the mode if ARG is omitted or nil.
 
 When AUCTeX ClutTeX mode is enabled, `auctex-cluttex-ClutTeX-command'
 is added to `TeX-command-list'."
+  :init-value nil
   (cond
    (auctex-cluttex-mode
     (auctex-cluttex-mode 0)
