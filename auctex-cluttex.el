@@ -37,9 +37,9 @@
 
 (require 'tex)
 (require 'latex)
-(require 'tex)
 
 (require 'cl-lib)
+(require 'ansi-color)
 
 
 (defgroup auctex-cluttex nil
