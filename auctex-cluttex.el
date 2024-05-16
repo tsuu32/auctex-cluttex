@@ -70,7 +70,9 @@
                 ('uptex   "up"))
               (pcase major-mode
                 ('plain-tex-mode "")
-                ('latex-mode     "la")))))
+                ('plain-TeX-mode "")
+                ('latex-mode     "la")
+                ('LaTeX-mode     "la")))))
   "TeX engine detector for `auctex-cluttex-ClutTeX-command'.
 See `TeX-expand-list-builtin'.")
 
