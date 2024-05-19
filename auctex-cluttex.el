@@ -3,7 +3,7 @@
 ;; Copyright (C) 2020-2024 by Masahiro Nakamura
 
 ;; Author: Masahiro Nakamura <tsuucat@icloud.com>
-;; Version: 0.2.0
+;; Version: 0.3.0
 ;; URL: https://github.com/tsuu32/auctex-cluttex
 ;; Package-Requires: ((emacs "24.4") (auctex "13.1"))
 ;; Keywords: tex
