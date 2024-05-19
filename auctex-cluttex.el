@@ -1,6 +1,6 @@
 ;;; auctex-cluttex.el --- ClutTeX support for AUCTeX -*- lexical-binding: t -*-
 
-;; Copyright (C) 2020-2021 by Masahiro Nakamura
+;; Copyright (C) 2020-2024 by Masahiro Nakamura
 
 ;; Author: Masahiro Nakamura <tsuucat@icloud.com>
 ;; Version: 0.2.0
