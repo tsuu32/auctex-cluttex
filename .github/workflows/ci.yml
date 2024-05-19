@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: ${{matrix.emacs_version == 'snapshot'}}
     strategy:
+      fail-fast: false
       matrix:
         emacs_version:
           - 25.1
